@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">LOTTERY GAME</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="lotteryForm">
+                    <div class="form-group">
+                        <label for="number1">Number 1</label>
+                        <input type="text" class="form-control" id="number1" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="number2">Number 2</label>
+                        <input type="text" class="form-control" id="number2" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="number3">Number 3</label>
+                        <input type="text" class="form-control" id="number3" readonly>
+                    </div>
+                    <button type="button" class="btn btn-primary mt-3" id="startButton">Start</button>
+                </form>
+                <div id="resultMessage" class="mt-3 alert" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#startButton').click(function() {
+                $.ajax({
+                    url: "{% url 'generate_numbers' %}",
+                    method: 'GET',
+                    success: function(response) {
+                        $('#number1').val(response.numbers[0]);
+                        $('#number2').val(response.numbers[1]);
+                        $('#number3').val(response.numbers[2]);
+                        $('#resultMessage').text(response.message).show();
+                        if (response.message === "Вы выиграли!") {
+                            $('#resultMessage').removeClass('alert-danger').addClass('alert-success');
+                        } else {
+                            $('#resultMessage').removeClass('alert-success').addClass('alert-danger');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
